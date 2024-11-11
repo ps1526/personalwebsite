@@ -8,11 +8,11 @@ export default function ProjectsPage() {
   const experience = [
     {
       id: "5",
-      title: "Data Engineering Intern - EPA OntoSearcher App",
+      title: "Data Engineering Intern @ National Nanotechnology Initiative",
       description: [
         "Led the creation of a scalable ETL pipeline to enhance EPA's OntoSearcher App, optimizing ontology mappings and improving data flow across federal systems.",
         "Engineered interoperable ontology file formats for over 30 federal databases, ensuring seamless integration of environmental, health, and safety data.",
-        "Worked directly with federal partners under Dr. Branden Brough, Dr. Holly Mortensen, and Dr. Rhema Bjorkland driving high-quality data outputs and enhancing public safety databases.",
+        "Worked directly with federal partners under Dr. Branden Brough, Dr. Holly Mortensen, and Dr. Rhema Bjorkland to drive high-quality data outputs and enhancing public safety databases.",
         "Resolved key issues to enhance application performance, boosting accuracy and reliability for government-wide ontology mapping efforts."
       ],
       date: "Internship, 2023",
@@ -21,7 +21,7 @@ export default function ProjectsPage() {
     },
     {
       id: "6",
-      title: "HerdHealth",
+      title: "Co-Founder @ HerdHealth",
       description: [
         "Engineered a data analytics application utilizing the MERN stack to enhance livestock vital-tracking systems for real-time data collection and analysis.",
         "Led a multidisciplinary team to the semifinals of UCSD's Triton Innovation Challenge, securing $3,000 in seed funding for further development.",
@@ -34,7 +34,7 @@ export default function ProjectsPage() {
     },
     {
       id: "7",
-      title: "Lumnus Consulting",
+      title: "Data Consultant @ Lumnus Consulting",
       description: [
         "Developed consulting frameworks leveraging multi-dataset insights from AI risk assessments and industry metrics for strategic decision-making.",
         "Led a cross-functional team to design and implement the Lumnus website, enhancing client engagement through user-centered design.",

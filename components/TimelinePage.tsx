@@ -48,12 +48,14 @@ interface TimelineItem {
   date: string;
   skills?: string[];
   icon?: keyof typeof IconMap | LucideIcon;
+  link?: string;
 }
 
 interface TimelinePageProps {
   type: 'projects' | 'experiences' | 'research';
   items: TimelineItem[];
   title: string;
+  link?: string;
   overview?: string;
   futurePlans?: string;
 }
@@ -113,9 +115,13 @@ const TimelineEvent: React.FC<{ item: TimelineItem; isLeft: boolean; isLast: boo
             `}
           >
             <div className="m-3">
-              <h3 className="text-white font-bold text-lg mb-2 break-words">
-                {item.title}
-              </h3>
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-white font-bold text-lg mb-2 break-words hover:underline">
+                  {item.title}
+                </a>
+              ) : (
+                <h3 className="text-white font-bold text-lg mb-2 break-words">{item.title}</h3>
+              )}
               <p className="text-white text-sm mb-2">{item.date}</p>
               
               {item.description && (
@@ -174,6 +180,7 @@ export default function TimelinePage({
   type,
   items,
   title,
+  link,
   overview,
   futurePlans
 }: TimelinePageProps) {
@@ -181,11 +188,18 @@ export default function TimelinePage({
     <main className="relative min-h-screen flex flex-col">
       {/* Gradient Background */}
       <div className="fixed inset-0 -z-10 bg-gradient-to-br from-[#2a0845] via-[#1a1b4b] to-[#006bc6] bg-fixed" />
-      
       <Navbar />
       
       <div className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-6 text-white">{title}</h1>
+      {link ? (
+          <h1 className="text-4xl font-bold mb-6 text-white">
+            <a href={link} target="_blank" rel="noopener noreferrer" className="hover:underline">
+              {title}
+            </a>
+          </h1>
+        ) : (
+          <h1 className="text-4xl font-bold mb-6 text-white">{title}</h1>
+        )}
         
         {overview && (
           <section className="mb-12">

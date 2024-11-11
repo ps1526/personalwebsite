@@ -16,7 +16,7 @@ export default function ProjectsPage() { // Ensure default export
             "Developed a robust API for real-time voice-based stress detection, enabling transformative applications across diverse industries."
           ],
           date: "May 2024",
-          skills: ["Data Engieering", "Machine Listening", "Librosa", "API Development", "Audio Vector Embeddings", "Audio Processing", "Feature Extractions"],
+          skills: ["Data Engieering", "Machine Listening", "DL-Based Time Series Forecasting", "Signal Processing", "Praat", "Parselmouth", "Librosa", "AWS S3", "API Development", "Audio Vector Embeddings", "Feature Extractions"],
           icon: "AudioLines" // Passing icon name as string
         },
         {
