@@ -12,7 +12,7 @@ export default function ProjectsPage() {
       description: [
         "Led the creation of a scalable ETL pipeline to enhance EPA's OntoSearcher App, optimizing ontology mappings and improving data flow across federal systems.",
         "Engineered interoperable ontology file formats for over 30 federal databases, ensuring seamless integration of environmental, health, and safety data.",
-        "Worked directly with federal partners under Dr. Branden Brough, driving high-quality data outputs and enhancing public safety databases.",
+        "Worked directly with federal partners under Dr. Branden Brough, Dr. Holly Mortensen, and Dr. Rhema Bjorkland driving high-quality data outputs and enhancing public safety databases.",
         "Resolved key issues to enhance application performance, boosting accuracy and reliability for government-wide ontology mapping efforts."
       ],
       date: "Internship, 2023",
