@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: transparent;  /* Changed to transparent to show gradient */
+  --foreground: #ffffff;     /* Changed to white for better readability on gradient */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: transparent;  /* Keep transparent for gradient */
+    --foreground: #ededed;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .gradient-background {
+    @apply fixed inset-0 -z-10;
+    background: linear-gradient(135deg, #2a0845 0%, #1a1b4b 50%, #006bc6 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+}
+
+/* Optional: Add a subtle overlay to improve text readability */
+.gradient-background::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
