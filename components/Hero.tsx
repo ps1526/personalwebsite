@@ -1,54 +1,172 @@
 "use client";
-
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Mail, Linkedin, Github, Send } from 'lucide-react';
 
-const Hero: React.FC = () => {
-  const [messages, setMessages] = useState<Array<{type: string, content: string}>>([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+// Types
+interface Message {
+  id: string;
+  type: 'user' | 'bot';
+  content: string;
+  timestamp: Date;
+}
 
-  const handleSendMessage = async () => {
-    if (inputMessage.trim()) {
-      setMessages(prev => [...prev, {
-        type: 'user',
-        content: inputMessage
-      }]);
-      
-      setIsLoading(true);
-      
-      // Simulate AI response - replace with your actual RAG implementation
-      setTimeout(() => {
-        setMessages(prev => [...prev, {
-          type: 'bot',
-          content: "Based on Pranav's resume, he's a Data Science student at UCSD with experience in various relevant coursework including Linear Algebra and Data Structures."
-        }]);
-        setIsLoading(false);
-      }, 1000);
-      
+interface ChatInputProps {
+  onSendMessage: (message: string) => Promise<void>;
+  isLoading: boolean;
+}
+
+// Chat Input Component
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
+  const [inputMessage, setInputMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputMessage.trim() && !isLoading) {
+      await onSendMessage(inputMessage.trim());
       setInputMessage('');
     }
   };
 
   return (
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <textarea
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+        placeholder="Ask me anything about my experience..."
+        className="flex-grow min-h-[80px] p-2 rounded-lg bg-gray-800 border border-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSubmit(e);
+          }
+        }}
+        disabled={isLoading}
+      />
+      <button
+        type="submit"
+        disabled={isLoading || !inputMessage.trim()}
+        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 flex items-center justify-center"
+      >
+        <Send className="h-5 w-5" />
+      </button>
+    </form>
+  );
+};
+
+// Message List Component
+const MessageList: React.FC<{ messages: Message[], isLoading: boolean }> = ({ messages, isLoading }) => {
+  return (
+    <div className="flex-grow overflow-y-auto mb-4 p-4">
+      <div className="space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`max-w-[80%] rounded-lg p-3 ${
+                message.type === 'user'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-700 text-white'
+              }`}
+            >
+              {message.content}
+            </div>
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-gray-700 text-white rounded-lg p-3">
+              <div className="flex space-x-2">
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const Hero: React.FC = () => {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSendMessage = useCallback(async (message: string) => {
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: message,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, newMessage]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch response');
+      }
+
+      const data = await response.json();
+      
+      const botMessage: Message = {
+        id: Date.now().toString(),
+        type: 'bot',
+        content: data.response,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error calling API:', error);
+      const errorMessage: Message = {
+        id: Date.now().toString(),
+        type: 'bot',
+        content: "I apologize, but I encountered an error processing your request. Please try again.",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return (
     <div className="min-h-screen flex flex-col items-center pt-16 px-4">
       {/* Hero Content */}
       <div className="max-w-2xl w-full text-center mb-12">
-        <h1 className="text-5xl font-bold text-white mb-5">My name is Pranav Singh</h1>
+        <h1 className="text-5xl font-bold text-white mb-5">Welcome!</h1>
         <p className="text-lg font-bold text-white mb-5">
-          I am a 2nd Year Data Science Student at UCSD who is interested in data science, data engineering, software engineering, and machine learning.
+          My name is Pranav and I'm a Data Science Student at UCSD who is interested in data science, data engineering, software engineering, and machine learning.
         </p>
         
         <div className="text-white my-4 flex flex-col items-center">
           <p className="mb-2">Some relevant coursework include:</p>
           <div className="inline-block text-left max-w-md">
             <ul className="list-disc pl-5 space-y-1">
-              <li className="ml-1"><span className="font-bold">Linear Algebra</span></li>
-              <li className="ml-1"><span className="font-bold">Multivariable Calculus</span></li>
-              <li className="ml-1"><span className="font-bold">Foundations of Data Science</span></li>
-              <li className="ml-1"><span className="font-bold">Data Structures and Algorithms</span></li>
-              <li className="ml-1"><span className="font-bold">Theoretical Foundations of Data Science I & II</span></li>
-              <li className="ml-1"><span className="font-bold">Practice & Application of Data Science</span></li>
+              {[
+                'Linear Algebra',
+                'Multivariable Calculus',
+                'Foundations of Data Science',
+                'Data Structures and Algorithms',
+                'Theoretical Foundations of Data Science I & II',
+                'Practice & Application of Data Science'
+              ].map((course) => (
+                <li key={course} className="ml-1">
+                  <span className="font-bold">{course}</span>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
@@ -61,60 +179,8 @@ const Hero: React.FC = () => {
       {/* Chat Interface */}
       <div className="w-full max-w-4xl bg-gray-900/50 rounded-lg border border-gray-800 p-4 mb-8">
         <div className="flex flex-col h-[400px]">
-          {/* Messages Container */}
-          <div className="flex-grow overflow-y-auto mb-4 p-4">
-            <div className="space-y-4">
-              {messages.map((message, index) => (
-                <div
-                  key={index}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg p-3 ${
-                      message.type === 'user'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-700 text-white'
-                    }`}
-                  >
-                    {message.content}
-                  </div>
-                </div>
-              ))}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-700 text-white rounded-lg p-3">
-                    <div className="flex space-x-2">
-                      <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                      <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Input Area */}
-          <div className="flex gap-2">
-            <textarea
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Ask me anything about my experience..."
-              className="flex-grow min-h-[80px] p-2 rounded-lg bg-gray-800 border border-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-            />
-            <button
-              onClick={handleSendMessage}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 flex items-center justify-center"
-            >
-              <Send className="h-5 w-5" />
-            </button>
-          </div>
+          <MessageList messages={messages} isLoading={isLoading} />
+          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>
       </div>
 
@@ -124,31 +190,23 @@ const Hero: React.FC = () => {
           If you'd like to discuss potential collaborations or learn more about my work, feel free to reach out:
         </p>
         
-        {/* Social Links */}
         <div className="flex justify-center gap-6">
-          <a href="mailto:prs007@ucsd.edu"
-            className="text-white hover:text-blue-300 transition-colors duration-300 flex items-center gap-2 hover:scale-110 transform"
-            aria-label="Email"
-          >
-            <Mail size={40} />
-          </a>
-          
-          <a href="https://www.linkedin.com/in/pranav-singh-usa/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white hover:text-blue-300 transition-colors duration-300 flex items-center gap-2 hover:scale-110 transform"
-            aria-label="LinkedIn"
-          >
-            <Linkedin size={40} />
-          </a>
-          
-          <a href="https://github.com/ps1526"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-white hover:text-blue-300 transition-colors duration-300 flex items-center gap-2 hover:scale-110 transform"
-          >
-            <Github size={40} />
-          </a>
+          {[
+            { href: "mailto:prs007@ucsd.edu", Icon: Mail, label: "Email" },
+            { href: "https://www.linkedin.com/in/pranav-singh-usa/", Icon: Linkedin, label: "LinkedIn" },
+            { href: "https://github.com/ps1526", Icon: Github, label: "GitHub" }
+          ].map(({ href, Icon, label }) => (
+            <a
+              key={label}
+              href={href}
+              target={label !== "Email" ? "_blank" : undefined}
+              rel={label !== "Email" ? "noopener noreferrer" : undefined}
+              className="text-white hover:text-blue-300 transition-colors duration-300 flex items-center gap-2 hover:scale-110 transform"
+              aria-label={label}
+            >
+              <Icon size={40} />
+            </a>
+          ))}
         </div>
       </div>
     </div>

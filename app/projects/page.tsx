@@ -9,7 +9,7 @@ export default function ProjectsPage() { // Ensure default export
     const projects = [
         {
           id: "4",
-          title: "Yaad",
+          title: "Yaadein",
           link: "https://github.com/ajagtapdev/yaad",
           description: [
             "Built scalable backend for AI-driven memory preservation platform",
