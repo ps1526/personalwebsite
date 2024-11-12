@@ -62,14 +62,42 @@ Johnson Research Group @ ASDRP: Developed an emotion classification model using 
 Subramaniam Research Group @ ASDRP: Forecasted crime rates in Chicago using time series data with ARIMA and SARIMA models to provide data-driven insights. Analyzed discrepancies in crime rates across neighborhoods, offering explanations based on socioeconomic and political factors. Published research findings in the Journal of Emerging Investigators, contributing to the academic community.
 `;
 
+// Add error checking for API key
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error('OPENAI_API_KEY is not defined in environment variables');
+}
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || '', // Fallback to empty string to prevent undefined
 });
 
 export async function POST(req: Request) {
+  // Add debug logging
+  console.log('Environment check:', {
+    hasApiKey: !!process.env.OPENAI_API_KEY,
+    keyLength: process.env.OPENAI_API_KEY?.length,
+    nodeEnv: process.env.NODE_ENV,
+  });
+
   try {
     const { message } = await req.json();
+
+    // Additional validation for the message
+    if (!message) {
+      return NextResponse.json(
+        { error: 'Message is required' },
+        { status: 400 }
+      );
+    }
+
+    // Verify API key before making the request
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('OpenAI API key is missing in the environment');
+      return NextResponse.json(
+        { error: 'OpenAI API key is not configured' },
+        { status: 500 }
+      );
+    }
 
     const response = await openai.chat.completions.create({
       model: "gpt-4",
@@ -87,11 +115,33 @@ export async function POST(req: Request) {
       max_tokens: 200,
     });
 
+    if (!response.choices[0]?.message?.content) {
+      console.error('No response content from OpenAI');
+      return NextResponse.json(
+        { error: 'Failed to generate response' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
-      response: response.choices[0]?.message?.content || "I apologize, but I couldn't generate a response. Please try again."
+      response: response.choices[0].message.content
     });
+
   } catch (error) {
-    console.error('Error in chat API:', error);
+    // Enhanced error logging
+    console.error('Error in chat API:', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Check for specific error types
+    if (error instanceof Error && error.message.includes('API key')) {
+      return NextResponse.json(
+        { error: 'Authentication error with OpenAI' },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Failed to process the request' },
       { status: 500 }
