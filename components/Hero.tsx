@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Mail, Linkedin, Github, Send } from 'lucide-react';
 
 // Types
@@ -32,7 +32,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
       <textarea
         value={inputMessage}
         onChange={(e) => setInputMessage(e.target.value)}
-        placeholder="Ask me anything about my experience..."
+        placeholder="What relevant certifications and coursework does Pranav have?"
         className="flex-grow min-h-[80px] p-2 rounded-lg bg-gray-800 border border-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.shiftKey) {
@@ -55,8 +55,22 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
 
 // Message List Component
 const MessageList: React.FC<{ messages: Message[], isLoading: boolean }> = ({ messages, isLoading }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Only scroll the messages container when new messages arrive
+    if (messageListRef.current) {
+      messageListRef.current.scrollTop = messageListRef.current.scrollHeight;
+    }
+  }, [messages, isLoading]);
+
   return (
-    <div className="flex-grow overflow-y-auto mb-4 p-4">
+    <div 
+      ref={messageListRef}
+      className="flex-grow overflow-y-auto mb-4 p-4 scroll-smooth"
+      style={{ scrollBehavior: 'smooth' }}
+    >
       <div className="space-y-4">
         {messages.map((message) => (
           <div
@@ -143,33 +157,30 @@ const Hero: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col items-center pt-16 px-4">
+    // Remove scroll-behavior from the main container
+    <div className="min-h-screen flex flex-col items-center px-4">
       {/* Hero Content */}
-      <div className="max-w-2xl w-full text-center mb-12">
+      <div className="max-w-2xl w-full text-center mb-12 pt-16">
         <h1 className="text-5xl font-bold text-white mb-5">Welcome!</h1>
         <p className="text-lg font-bold text-white mb-5">
-          My name is Pranav and I'm a Data Science Student at UCSD who is interested in data science, data engineering, software engineering, and machine learning.
+          My name is Pranav Singh and I'm a Data Science Student at UCSD who is interested in data science, data engineering, software engineering, 
+          and machine learning. 
         </p>
-        
+
         <div className="text-white my-4 flex flex-col items-center">
-          <p className="mb-2">Some relevant coursework include:</p>
-          <div className="inline-block text-left max-w-md">
-            <ul className="list-disc pl-5 space-y-1">
-              {[
-                'Linear Algebra',
-                'Multivariable Calculus',
-                'Foundations of Data Science',
-                'Data Structures and Algorithms',
-                'Theoretical Foundations of Data Science I & II',
-                'Practice & Application of Data Science'
-              ].map((course) => (
-                <li key={course} className="ml-1">
-                  <span className="font-bold">{course}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <p className="mb-2"> As a developer and researcher, my goal is to create ethical, equitable, and impactful data-driven solutions. Whether designing 
+          data pipelines, creating custom collection methods, or developing machine learning and deep learning models, I’m driven by a desire to push my boundaries 
+          and apply my skills across diverse domains. From cheminformatics and stress prediction to tackling societal data biases, I’ve enjoyed leveraging my experience 
+          as a machine learning engineer and data scientist to address real-world challenges.</p>
         </div>
+        <div className="text-white my-4 flex flex-col items-center">
+          <p className="mb-2"> Additionally, I’ve had the opportunity to build AI-powered applications at a wide variety of hackathons using a broad mix of technologies, 
+          integrating language models, agents, and speech generative models to solve complex problems.</p>
+        </div>
+        <div className="text-white my-4 flex flex-col items-center">
+          <p className="mb-2"> Now, I’m eager to find research or industry opportunities where I can grow as a builder, thinker, and person while contributing to projects and ideas that are impactful, fair, and inclusive.</p>
+        </div>
+      
 
         <p className="text-white mt-8 mb-6">
           Feel free to look through my past research, projects, and experiences, or ask a question below:

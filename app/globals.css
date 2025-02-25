@@ -3,13 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: transparent;  /* Changed to transparent to show gradient */
-  --foreground: #ffffff;     /* Changed to white for better readability on gradient */
+  --background: transparent; 
+  --foreground: #ffffff; 
+  --timeline-bg: rgba(255, 255, 255, 0.1);
+  --timeline-first-item-bg: #3a467d; /* Solid color for first item */
+  --timeline-skill-bg: rgba(255, 255, 255, 0.2);
+  --timeline-first-skill-bg: #4a568d; /* Solid color for skills in first item */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: transparent;  /* Keep transparent for gradient */
+    --background: transparent; 
     --foreground: #ededed;
   }
 }
@@ -34,13 +38,40 @@ body {
     background-attachment: fixed;
     min-height: 100vh;
   }
+  
+  /* Timeline specific utilities */
+  .timeline-card {
+    @apply rounded-lg shadow-lg p-4 relative z-10;
+    background-color: var(--timeline-bg);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .timeline-card-first {
+    background-color: var(--timeline-first-item-bg);
+    backdrop-filter: none; /* No blur for first item */
+  }
+  
+  .timeline-skill {
+    @apply text-white text-xs px-2 py-1 rounded break-words;
+    background-color: var(--timeline-skill-bg);
+    backdrop-filter: blur(4px);
+  }
+  
+  .timeline-skill-first {
+    background-color: var(--timeline-first-skill-bg);
+    backdrop-filter: none; /* No blur for skills in first item */
+  }
 }
 
 /* Optional: Add a subtle overlay to improve text readability */
+/* NOTE: This might be causing the issue with the first timeline item */
+/* Consider commenting this out if problems persist */
 .gradient-background::after {
   content: '';
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.1);
   pointer-events: none;
+  z-index: 0; /* Ensure it's below timeline content */
 }

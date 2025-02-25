@@ -1,4 +1,7 @@
-import React from 'react';
+// TimelinePage.tsx
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/navbar';
 import { 
   Activity,
@@ -17,8 +20,7 @@ import {
   FlaskConical,
   Cctv,
   Headphones,
-  type LucideIcon,
-  type LucideProps
+  type LucideIcon
 } from "lucide-react";
 
 // Define a mapping of icon names to components
@@ -60,7 +62,11 @@ interface TimelinePageProps {
   futurePlans?: string;
 }
 
-const TimelineEvent: React.FC<{ item: TimelineItem; isLeft: boolean; isLast: boolean }> = ({ 
+const TimelineEvent: React.FC<{ 
+  item: TimelineItem; 
+  isLeft: boolean; 
+  isLast: boolean; 
+}> = ({ 
   item, 
   isLeft, 
   isLast 
@@ -90,46 +96,45 @@ const TimelineEvent: React.FC<{ item: TimelineItem; isLeft: boolean; isLast: boo
       >
         <div className={`w-5/12 ${isLeft ? 'pr-4' : 'pl-4'} relative`}>
           <div 
-            className={`
-              absolute top-0 w-8 h-8 rounded-full bg-white shadow-lg 
-              flex items-center justify-center
-              transform transition-all duration-300 ease-in-out
-              ${isHovered ? 'scale-125' : 'scale-100'}
-            `}
+            className="absolute top-0 w-8 h-8 rounded-full bg-white shadow-lg z-30
+                      flex items-center justify-center"
             style={{ [isLeft ? 'right' : 'left']: '-16px' }}
           >
             <IconComponent 
-              className={`
-                w-4 h-4 text-blue-800
-                transition-transform duration-300
-                ${isHovered ? 'rotate-12' : 'rotate-0'}
-              `}
+              className="w-4 h-4 text-blue-800"
             />
           </div>
 
+          {/* Use inline styles for critical visual components */}
           <div 
-            className={`
-              bg-white/10 backdrop-blur-sm p-4 rounded-lg
-              transform transition-all duration-300 ease-in-out
-              ${isHovered ? 'translate-y-[-4px] shadow-xl bg-white/15' : 'shadow-lg'}
-            `}
+            className="p-4 rounded-lg shadow-lg"
+            style={{
+              backgroundColor: 'rgba(74, 86, 141, 0.8)', // Using more opaque background color
+              position: 'relative',
+              zIndex: 20,
+            }}
           >
             <div className="m-3">
               {item.link ? (
-                <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-white font-bold text-lg mb-2 break-words hover:underline">
-                  {item.title}
+                <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-white font-bold text-lg mb-2 block break-words hover:underline">
+                  {item.title || "Untitled"}
                 </a>
               ) : (
-                <h3 className="text-white font-bold text-lg mb-2 break-words">{item.title}</h3>
+                <h3 className="text-white font-bold text-lg mb-2 break-words">
+                  {item.title || "Untitled"}
+                </h3>
               )}
               <p className="text-white text-sm mb-2">{item.date}</p>
               
               {item.description && (
                 Array.isArray(item.description) ? (
                   <ul className="list-disc list-inside text-white mb-2">
-                    {item.description.map((point, i) => (
-                      <li key={i} className="mb-1 break-words">{point}</li>
-                    ))}
+                    {item.description
+                      .filter(point => point && point.trim() !== '')
+                      .map((point, i) => (
+                        <li key={i} className="mb-1 break-words">{point}</li>
+                      ))
+                    }
                   </ul>
                 ) : (
                   <p className="text-white mb-2 break-words">{item.description}</p>
@@ -141,12 +146,8 @@ const TimelineEvent: React.FC<{ item: TimelineItem; isLeft: boolean; isLast: boo
                   {item.skills.map((skill, skillIndex) => (
                     <span 
                       key={skillIndex} 
-                      className={`
-                        text-white text-xs px-2 py-1 rounded break-words
-                        bg-white/20 backdrop-blur-sm
-                        transition-all duration-300
-                        ${isHovered ? 'bg-white/25' : 'bg-white/20'}
-                      `}
+                      className="text-white text-xs px-2 py-1 rounded break-words"
+                      style={{ backgroundColor: 'rgba(98, 114, 164, 0.9)' }}
                     >
                       {skill}
                     </span>
@@ -166,7 +167,7 @@ const Timeline: React.FC<{ items: TimelineItem[] }> = ({ items }) => {
     <div className="relative">
       {items.map((item, index) => (
         <TimelineEvent
-          key={item.id}
+          key={item.id || `timeline-${index}`}
           item={item}
           isLeft={index % 2 === 0}
           isLast={index === items.length - 1}
@@ -184,14 +185,26 @@ export default function TimelinePage({
   overview,
   futurePlans
 }: TimelinePageProps) {
+  // State to handle delayed rendering
+  const [isVisible, setIsVisible] = useState(false);
+  const [suppressHydrationWarning, setSuppressHydrationWarning] = useState(false);
+
+  useEffect(() => {
+    // Suppress hydration warnings
+    setSuppressHydrationWarning(true);
+    
+    // Delay rendering to ensure all styles are properly loaded
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+  }, []);
+
   return (
-    <main className="relative min-h-screen flex flex-col">
-      {/* Gradient Background */}
-      <div className="fixed inset-0 -z-10 bg-gradient-to-br from-[#2a0845] via-[#1a1b4b] to-[#006bc6] bg-fixed" />
+    <main className="relative min-h-screen flex flex-col" suppressHydrationWarning={suppressHydrationWarning}>
       <Navbar />
       
       <div className="flex-grow container mx-auto px-4 py-8">
-      {link ? (
+        {link ? (
           <h1 className="text-4xl font-bold mb-6 text-white">
             <a href={link} target="_blank" rel="noopener noreferrer" className="hover:underline">
               {title}
@@ -215,8 +228,19 @@ export default function TimelinePage({
           </section>
         )}
         
-        <div className="bg-white/5 backdrop-blur-sm p-6 rounded-lg">
-          <Timeline items={items} />
+        <div 
+          className="p-6 rounded-lg"
+          style={{ 
+            backgroundColor: 'rgba(30, 41, 59, 0.5)',
+            position: 'relative',
+            zIndex: 10
+          }}
+        >
+          {isVisible ? (
+            <Timeline items={items} />
+          ) : (
+            <div className="p-10 text-center text-white">Loading timeline...</div>
+          )}
         </div>
       </div>
     </main>

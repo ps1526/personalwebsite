@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 const RESUME = `
+Purpose: Looking for data engineering, data science, machine learning, or software engineering roles in both the industry and research setting. Driven by building solutions with a postive impact for customers, consumers, or the global community
 Pranav Singh
 pranavsingh.us@gmail.com | (650) 741-8906 | linkedin.com/in/pranav-singh-usa
 
@@ -16,6 +17,8 @@ CERTIFICATIONS
 - Salesforce Certified AI Associate - Jul 2024
 - IBM - Databases and SQL for Data Science with Python - Jan 2024
 - UCSD - Data Structures and Algorithms Specialization - Oct 2023
+Relevant classes:
+Linear Algebra, Multivariable Calculus, Foundations of Data Science, Data Structures and Algorithms, Theoretical Foundations of Data Science I & II, Practice & Application of Data Science
 
 SKILLS
 Machine Learning, NLP, HuggingFace, LangChain, PyTorch, Data Mining, TensorFlow, Scikit-Learn, Keras, Pandas, Django, React.js, Next.js, Python, Java, C++, SQL, JavaScript, HTML, CSS, Tailwind, AWS, AWS Glue, Amazon Redshift, GCP, Firebase
@@ -63,19 +66,21 @@ Subramaniam Research Group @ ASDRP: Forecasted crime rates in Chicago using time
 `;
 
 // Add error checking for API key
-if (!process.env.OPENAI_API_KEY) {
+// replace process.env.OPENAI_API_KEY with key 
+const apiKey = process.env.OPENAI_API_KEY;
+if (!apiKey) {
   throw new Error('OPENAI_API_KEY is not defined in environment variables');
 }
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '', // Fallback to empty string to prevent undefined
+  apiKey: apiKey|| '', // Fallback to empty string to prevent undefined
 });
 
 export async function POST(req: Request) {
   // Add debug logging
   console.log('Environment check:', {
-    hasApiKey: !!process.env.OPENAI_API_KEY,
-    keyLength: process.env.OPENAI_API_KEY?.length,
+    hasApiKey: !!apiKey,
+    keyLength: apiKey?.length,
     nodeEnv: process.env.NODE_ENV,
   });
 
@@ -91,7 +96,7 @@ export async function POST(req: Request) {
     }
 
     // Verify API key before making the request
-    if (!process.env.OPENAI_API_KEY) {
+    if (!apiKey) {
       console.error('OpenAI API key is missing in the environment');
       return NextResponse.json(
         { error: 'OpenAI API key is not configured' },
@@ -100,11 +105,11 @@ export async function POST(req: Request) {
     }
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: `You are a helpful assistant answering questions about Pranav based on his resume and background. Give a 3-4 sentence response from the question prompted. Here is his resume: ${RESUME}`
+          content: `You are a helpful assistant answering questions about Pranav based on his expereinces, info, and reusme. Give a response from the question prompted. Here is the background info: ${RESUME}`
         },
         {
           role: "user",

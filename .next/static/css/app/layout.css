@@ -581,6 +581,12 @@ video {
 .z-0 {
   z-index: 0;
 }
+.z-10 {
+  z-index: 10;
+}
+.z-30 {
+  z-index: 30;
+}
 .m-3 {
   margin: 0.75rem;
 }
@@ -617,14 +623,14 @@ video {
 .mb-8 {
   margin-bottom: 2rem;
 }
-.ml-1 {
-  margin-left: 0.25rem;
-}
 .mt-8 {
   margin-top: 2rem;
 }
-.inline-block {
-  display: inline-block;
+.block {
+  display: block;
+}
+.inline {
+  display: inline;
 }
 .flex {
   display: flex;
@@ -686,36 +692,14 @@ video {
 .max-w-\[80\%\] {
   max-width: 80%;
 }
-.max-w-md {
-  max-width: 28rem;
-}
 .flex-grow {
+  flex-grow: 1;
+}
+.grow {
   flex-grow: 1;
 }
 .-translate-x-1\/2 {
   --tw-translate-x: -50%;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.translate-y-\[-4px\] {
-  --tw-translate-y: -4px;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.rotate-0 {
-  --tw-rotate: 0deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.rotate-12 {
-  --tw-rotate: 12deg;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.scale-100 {
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.scale-125 {
-  --tw-scale-x: 1.25;
-  --tw-scale-y: 1.25;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .transform {
@@ -774,11 +758,6 @@ video {
   margin-right: calc(0.5rem * var(--tw-space-x-reverse));
   margin-left: calc(0.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
-.space-y-1 > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(0.25rem * var(--tw-space-y-reverse));
-}
 .space-y-4 > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
@@ -789,6 +768,9 @@ video {
 }
 .overflow-y-auto {
   overflow-y: auto;
+}
+.scroll-smooth {
+  scroll-behavior: smooth;
 }
 .break-words {
   overflow-wrap: break-word;
@@ -839,17 +821,8 @@ video {
 .bg-white\/10 {
   background-color: rgb(255 255 255 / 0.1);
 }
-.bg-white\/15 {
-  background-color: rgb(255 255 255 / 0.15);
-}
 .bg-white\/20 {
   background-color: rgb(255 255 255 / 0.2);
-}
-.bg-white\/25 {
-  background-color: rgb(255 255 255 / 0.25);
-}
-.bg-white\/5 {
-  background-color: rgb(255 255 255 / 0.05);
 }
 .bg-white\/70 {
   background-color: rgb(255 255 255 / 0.7);
@@ -884,6 +857,9 @@ video {
 .p-6 {
   padding: 1.5rem;
 }
+.p-10 {
+  padding: 2.5rem;
+}
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -907,17 +883,11 @@ video {
 .pl-4 {
   padding-left: 1rem;
 }
-.pl-5 {
-  padding-left: 1.25rem;
-}
 .pr-4 {
   padding-right: 1rem;
 }
 .pt-16 {
   padding-top: 4rem;
-}
-.text-left {
-  text-align: left;
 }
 .text-center {
   text-align: center;
@@ -969,10 +939,12 @@ video {
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
-.shadow-xl {
-  --tw-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+.blur {
+  --tw-blur: blur(8px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .backdrop-blur-sm {
   --tw-backdrop-blur: blur(4px);
@@ -984,18 +956,8 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
 .transition-colors {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-.transition-transform {
-  transition-property: transform;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -1008,15 +970,20 @@ video {
 .ease-in-out {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Timeline specific utilities */
 
 :root {
-  --background: transparent;  /* Changed to transparent to show gradient */
-  --foreground: #ffffff;     /* Changed to white for better readability on gradient */
+  --background: transparent; 
+  --foreground: #ffffff; 
+  --timeline-bg: rgba(255, 255, 255, 0.1);
+  --timeline-first-item-bg: #3a467d; /* Solid color for first item */
+  --timeline-skill-bg: rgba(255, 255, 255, 0.2);
+  --timeline-first-skill-bg: #4a568d; /* Solid color for skills in first item */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: transparent;  /* Keep transparent for gradient */
+    --background: transparent; 
     --foreground: #ededed;
   }
 }
@@ -1031,12 +998,15 @@ body {
 }
 
 /* Optional: Add a subtle overlay to improve text readability */
+/* NOTE: This might be causing the issue with the first timeline item */
+/* Consider commenting this out if problems persist */
 .gradient-background::after {
   content: '';
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.1);
   pointer-events: none;
+  z-index: 0; /* Ensure it's below timeline content */
 }
 .hover\:scale-105:hover {
   --tw-scale-x: 1.05;
