@@ -7,7 +7,22 @@ import TimelinePage from '@/components/TimelinePage'; // Ensure the correct comp
 
 export default function ProjectsPage() { // Ensure default export
     const projects = [
-        {
+      {
+        id: "5",
+        title: "ResearchKG",
+        link: "https://github.com/ps1526/researchkg_interactive",
+        description: [
+          "Developed Python citation network generator using Semantic Scholar API to map 1000+ research relationships across academic disciplines",
+          "Implemented spaCy NLP processing to extract and analyze relationships between academic papers from a single source document",
+          "Built interactive Next.js/D3.js visualization platform with advanced filtering capabilities and cycle detection algorithms",
+          "Integrated OpenAI API to analyze citation networks, identify research gaps, and predict emerging research opportunities",
+          "Created comprehensive knowledge graph system to visualize complex academic interconnections and reveal undiscovered research pathways"
+          ],
+        date: "2025",
+        skills: ["Next.js", "SemanticScholar", "Neo4j", "spaCyNLP", "D3.js", "Graphology", "WebGL", "OpenAI", "Graph RAG"],
+        icon: "Network" // Passing icon name as string
+      }
+        ,{
           id: "4",
           title: "Yaadein",
           link: "https://github.com/ajagtapdev/yaad",

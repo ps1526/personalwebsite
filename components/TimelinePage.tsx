@@ -20,6 +20,7 @@ import {
   FlaskConical,
   Cctv,
   Headphones,
+  Network,
   type LucideIcon
 } from "lucide-react";
 
@@ -40,7 +41,8 @@ const IconMap: Record<string, LucideIcon> = {
   ScanFace,
   FlaskConical,
   Cctv,
-  Headphones
+  Headphones,
+  Network
 };
 
 interface TimelineItem {
